@@ -56,7 +56,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         title: const Text(
-          "Log In to Your Account",
+          "Log In",
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
