@@ -1,6 +1,7 @@
-// konversi.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:konversisuhu/converter_provider.dart';
+import 'package:provider/provider.dart';
 
 class TemperatureConverter extends StatefulWidget {
   const TemperatureConverter({super.key});
@@ -20,49 +21,6 @@ void setPageTitle(String title, BuildContext context) {
 }
 
 class _TemperatureConverterState extends State<TemperatureConverter> {
-  final TextEditingController _fahrenheitController = TextEditingController();
-  final TextEditingController _celsiusController = TextEditingController();
-  final TextEditingController _reamurController = TextEditingController();
-  final TextEditingController _kelvinController = TextEditingController();
-
-  void _convertFromFahrenheit(String value) {
-    double fahrenheit = double.tryParse(value) ?? 0.0;
-    setState(() {
-      _celsiusController.text = ((fahrenheit - 32) * 5 / 9).toStringAsFixed(2);
-      _reamurController.text = ((fahrenheit - 32) * 4 / 9).toStringAsFixed(2);
-      _kelvinController.text = ((fahrenheit - 32) * 5 / 9 + 273.15)
-          .toStringAsFixed(2);
-    });
-  }
-
-  void _convertFromCelsius(String value) {
-    double celsius = double.tryParse(value) ?? 0.0;
-    setState(() {
-      _fahrenheitController.text = ((celsius * 9 / 5) + 32).toStringAsFixed(2);
-      _reamurController.text = (celsius * 4 / 5).toStringAsFixed(2);
-      _kelvinController.text = (celsius + 273.15).toStringAsFixed(2);
-    });
-  }
-
-  void _convertFromReamur(String value) {
-    double reamur = double.tryParse(value) ?? 0.0;
-    setState(() {
-      _fahrenheitController.text = ((reamur * 9 / 4) + 32).toStringAsFixed(2);
-      _celsiusController.text = (reamur * 5 / 4).toStringAsFixed(2);
-      _kelvinController.text = ((reamur * 5 / 4) + 273.15).toStringAsFixed(2);
-    });
-  }
-
-  void _convertFromKelvin(String value) {
-    double kelvin = double.tryParse(value) ?? 0.0;
-    setState(() {
-      _fahrenheitController.text = ((kelvin - 273.15) * 9 / 5 + 32)
-          .toStringAsFixed(2);
-      _celsiusController.text = (kelvin - 273.15).toStringAsFixed(2);
-      _reamurController.text = ((kelvin - 273.15) * 4 / 5).toStringAsFixed(2);
-    });
-  }
-
   Widget _buildTemperatureField(
     String label,
     TextEditingController controller,
@@ -92,10 +50,10 @@ class _TemperatureConverterState extends State<TemperatureConverter> {
 
   @override
   Widget build(BuildContext context) {
-    setPageTitle('Konversi', context);
+    final provider = context.watch<CounterProvider>();
+
     return Scaffold(
-      appBar: AppBar(title: Text('Konversi Suhu'), centerTitle: true
-      ),
+      appBar: AppBar(title: Text('Konversi Suhu'), centerTitle: true),
       backgroundColor: Color.fromRGBO(230, 204, 178, 1),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -103,24 +61,24 @@ class _TemperatureConverterState extends State<TemperatureConverter> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildTemperatureField(
-              'Fahrenheit',
-              _fahrenheitController,
-              _convertFromFahrenheit,
-            ),
-            _buildTemperatureField(
               'Celsius',
-              _celsiusController,
-              _convertFromCelsius,
+              provider.celsiusController,
+              (value) {}, // Tidak perlu aksi tambahan karena listener sudah ada
             ),
             _buildTemperatureField(
-              'Reamur',
-              _reamurController,
-              _convertFromReamur,
+              'Fahrenheit',
+              provider.fahrenheitController,
+              (value) {}, // Field ini hanya untuk menampilkan hasil
             ),
             _buildTemperatureField(
-              'Kelvin',
-              _kelvinController,
-              _convertFromKelvin,
+              'reamur',
+              provider.reamurController,
+              (value) {}, // Field ini hanya untuk menampilkan hasil
+            ),
+            _buildTemperatureField(
+              'kelvin',
+              provider.kelvinController,
+              (value) {}, // Field ini hanya untuk menampilkan hasil
             ),
           ],
         ),
